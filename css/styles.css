@@ -1,0 +1,1366 @@
+/* 小鼠奇遇记 - Game Design System - Cozy Book & Cheese Theme */
+
+/* CSS Variables - Game Color Palette */
+:root {
+    /* Game Background Colors */
+    --background: hsl(35, 25%, 95%);
+    --foreground: hsl(25, 45%, 15%);
+    
+    /* Book Theme Colors */
+    --book-brown: hsl(25, 45%, 35%);
+    --book-page: hsl(45, 80%, 92%);
+    --book-spine: hsl(20, 50%, 25%);
+    
+    /* Cheese Colors */
+    --cheese-yellow: hsl(48, 95%, 65%);
+    --cheese-glow: hsl(50, 100%, 75%);
+    --cheese-shadow: hsl(45, 70%, 45%);
+    
+    /* Mouse Colors */
+    --mouse-gray: hsl(0, 0%, 60%);
+    --mouse-pink: hsl(350, 80%, 85%);
+    --mouse-dark: hsl(0, 0%, 40%);
+    
+    /* UI Colors */
+    --primary: hsl(48, 95%, 65%);
+    --primary-foreground: hsl(25, 45%, 15%);
+    --primary-glow: hsl(50, 100%, 75%);
+    
+    --secondary: hsl(25, 45%, 35%);
+    --secondary-foreground: hsl(45, 80%, 92%);
+    
+    --accent: hsl(350, 80%, 85%);
+    --accent-foreground: hsl(25, 45%, 15%);
+    
+    --card: hsl(45, 80%, 92%);
+    --card-foreground: hsl(25, 45%, 15%);
+    
+    --muted: hsl(35, 25%, 88%);
+    --muted-foreground: hsl(25, 30%, 50%);
+    
+    --destructive: hsl(0, 84%, 60%);
+    --destructive-foreground: hsl(210, 40%, 98%);
+    
+    --border: hsl(35, 25%, 80%);
+    --input: hsl(35, 25%, 88%);
+    --ring: hsl(48, 95%, 65%);
+    
+    /* Game Gradients */
+    --gradient-sky: linear-gradient(180deg, hsl(200, 80%, 85%), hsl(35, 25%, 95%));
+    --gradient-book: linear-gradient(135deg, hsl(25, 45%, 35%), hsl(20, 50%, 25%));
+    --gradient-cheese: linear-gradient(135deg, hsl(48, 95%, 65%), hsl(50, 100%, 75%));
+    --gradient-button: linear-gradient(135deg, hsl(48, 95%, 65%), hsl(45, 70%, 45%));
+    
+    /* Game Shadows */
+    --shadow-soft: 0 4px 12px hsla(25, 45%, 15%, 0.15);
+    --shadow-glow: 0 0 20px hsla(48, 95%, 65%, 0.4);
+    --shadow-book: 0 8px 25px hsla(25, 45%, 15%, 0.25);
+    
+    /* Border Radius */
+    --radius: 0.75rem;
+}
+
+/* Reset and Base Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--background);
+    color: var(--foreground);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Page System */
+.page {
+    display: none;
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+}
+
+.page.active {
+    display: flex;
+    flex-direction: column;
+}
+
+.page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem;
+    text-align: center;
+}
+
+/* Home Page Styles */
+.home-container {
+    min-height: 100vh;
+    background: var(--gradient-sky);
+    background-image: url('../assets/images/game-background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.background-overlay {
+    position: absolute;
+    inset: 0;
+    background: hsla(35, 25%, 95%, 0.2);
+    backdrop-filter: blur(2px);
+}
+
+.home-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    animation: fadeIn 1s ease-in;
+}
+
+.game-title {
+    font-size: 4rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: var(--foreground);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.game-subtitle {
+    font-size: 1.25rem;
+    color: var(--muted-foreground);
+    margin-bottom: 2rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 24rem;
+}
+
+.button-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+/* Floating Cheese Decorations */
+.cheese-decoration {
+    position: absolute;
+    width: 4rem;
+    height: 4rem;
+    background: var(--gradient-cheese);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-glow);
+    animation: float 6s ease-in-out infinite, bounce-cheese 2s ease-in-out infinite;
+}
+
+.cheese-decoration.bottom-left {
+    bottom: 2.5rem;
+    left: 2.5rem;
+}
+
+.cheese-decoration.top-right {
+    top: 5rem;
+    right: 5rem;
+    animation-delay: 1s;
+}
+
+/* Button Styles */
+.game-button {
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius);
+    border: 2px solid transparent;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.game-button:focus {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+}
+
+.game-button.primary {
+    background: var(--gradient-button);
+    color: var(--primary-foreground);
+    box-shadow: var(--shadow-soft);
+}
+
+.game-button.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-book);
+}
+
+.game-button.secondary {
+    background: var(--gradient-book);
+    color: var(--secondary-foreground);
+    box-shadow: var(--shadow-soft);
+}
+
+.game-button.secondary:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, hsl(25, 45%, 40%), hsl(20, 50%, 30%));
+}
+
+.game-button.outline {
+    background: transparent;
+    color: var(--foreground);
+    border-color: var(--border);
+}
+
+.game-button.outline:hover {
+    background: var(--muted);
+    border-color: var(--primary);
+}
+
+.game-button.large {
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+}
+
+.game-button.small {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+/* Card Styles */
+.card {
+    background: var(--card);
+    color: var(--card-foreground);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+}
+
+.login-card, .register-card {
+    max-width: 28rem;
+    width: 100%;
+}
+
+.login-card h2, .register-card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary);
+}
+
+.login-card p, .register-card p {
+    color: var(--muted-foreground);
+    margin-bottom: 1.5rem;
+}
+
+.login-link, .register-link {
+    text-align: center;
+    margin: 1rem 0;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+}
+
+.login-link a, .register-link a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-link a:hover, .register-link a:hover {
+    text-decoration: underline;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--foreground);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--border);
+    border-radius: calc(var(--radius) - 2px);
+    background: var(--input);
+    color: var(--foreground);
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus, .form-group select:focus {
+    outline: none;
+    border-color: var(--ring);
+}
+
+.form-select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--border);
+    border-radius: calc(var(--radius) - 2px);
+    background: var(--input);
+    color: var(--foreground);
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    cursor: pointer;
+}
+
+/* Game Page Styles */
+.game-container {
+    min-height: 100vh;
+    background: var(--gradient-sky);
+    padding: 1rem;
+    position: relative;
+}
+
+.game-ui {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.ui-stats {
+    display: flex;
+    gap: 1rem;
+}
+
+.stat-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 0.75rem;
+    box-shadow: var(--shadow-soft);
+    min-width: 5rem;
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    margin-bottom: 0.25rem;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.stat-value.cheese-color {
+    color: var(--cheese-yellow);
+}
+
+.ui-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.canvas-container {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 1rem;
+    box-shadow: var(--shadow-book);
+    margin-bottom: 1rem;
+}
+
+#gameCanvas {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border: 1px solid var(--border);
+    border-radius: calc(var(--radius) - 2px);
+    background: var(--gradient-sky);
+    display: block;
+}
+
+.controls-info {
+    text-align: center;
+    padding: 1rem;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+}
+
+/* Game Overlays */
+.game-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+}
+
+.game-overlay.hidden {
+    display: none;
+}
+
+.overlay-content {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 2rem;
+    text-align: center;
+    box-shadow: var(--shadow-book);
+    max-width: 28rem;
+    width: 90%;
+}
+
+.overlay-content h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--primary);
+}
+
+.completion-title {
+    color: var(--primary) !important;
+}
+
+.final-score {
+    margin: 1.5rem 0;
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--cheese-yellow);
+}
+
+.overlay-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+/* Story Page */
+.story-content {
+    max-width: 40rem;
+    text-align: center;
+}
+
+.story-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: var(--primary);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.story-text {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border);
+}
+
+.story-text p {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: var(--foreground);
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.story-text p:last-child {
+    margin-bottom: 0;
+}
+
+.story-highlight {
+    font-weight: bold;
+    color: var(--primary);
+    text-align: center;
+    font-size: 1.25rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.story-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 20rem;
+    margin: 0 auto;
+}
+
+/* Achievements Page */
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    width: 100%;
+    max-width: 48rem;
+}
+
+.achievement-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    border: 2px solid var(--border);
+    transition: all 0.3s ease;
+}
+
+.achievement-card.unlocked {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-glow);
+}
+
+.achievement-card.locked {
+    opacity: 0.6;
+    filter: grayscale(50%);
+}
+
+.achievement-icon {
+    font-size: 2.5rem;
+    width: 4rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gradient-cheese);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.achievement-info {
+    flex: 1;
+    text-align: left;
+}
+
+.achievement-title {
+    font-size: 1.125rem;
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 0.25rem;
+}
+
+.achievement-description {
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.achievement-date {
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+    font-style: italic;
+}
+
+/* Saves Page */
+.saves-container {
+    width: 100%;
+    max-width: 32rem;
+    margin-bottom: 2rem;
+}
+
+.no-saves {
+    color: var(--muted-foreground);
+    font-style: italic;
+    padding: 2rem;
+}
+
+.save-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 1rem;
+    border: 1px solid var(--border);
+}
+
+.save-info {
+    flex: 1;
+    text-align: left;
+}
+
+.save-name {
+    font-size: 1.125rem;
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 0.25rem;
+}
+
+.save-details {
+    color: var(--foreground);
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.save-date {
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+}
+
+.save-actions {
+    margin-left: 1rem;
+}
+
+/* Dialogue Page */
+.dialogue-page-container {
+    min-height: 100vh;
+    background: var(--gradient-sky);
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+
+.character-display {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40vh;
+}
+
+.character-container {
+    animation: fadeIn 1s ease-in;
+}
+
+.mouse-character {
+    width: 12rem;
+    height: 12rem;
+    background-image: url('../assets/images/mouse-character.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    animation: float 6s ease-in-out infinite;
+}
+
+.dialogue-box-container {
+    flex-shrink: 0;
+}
+
+.dialogue-box {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-book);
+    border: 2px solid var(--primary);
+    margin-bottom: 1rem;
+    animation: slideInUp 0.5s ease-out;
+}
+
+.speaker {
+    font-size: 1.125rem;
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 0.75rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.dialogue-text-container {
+    position: relative;
+    background: var(--muted);
+    border-radius: calc(var(--radius) - 2px);
+    padding: 1rem;
+    min-height: 6rem;
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.dialogue-text {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--foreground);
+    flex: 1;
+}
+
+.typing-indicator {
+    color: var(--primary);
+    font-weight: bold;
+    animation: blink 1s infinite;
+    margin-left: 2px;
+}
+
+.dialogue-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.dialogue-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.dialogue-options.hidden {
+    display: none;
+}
+
+.dialogue-continue {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.continue-hint {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    font-style: italic;
+}
+
+.dialogue-skip {
+    text-align: center;
+}
+
+/* Dialogue Animations */
+@keyframes slideInUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes blink {
+    0%, 50% {
+        opacity: 1;
+    }
+    51%, 100% {
+        opacity: 0;
+    }
+}
+
+/* Toast Notifications */
+.toast-container {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 2000;
+    pointer-events: none;
+}
+
+.toast {
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius);
+    color: white;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    transform: translateX(100%);
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: auto;
+}
+
+.toast.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.toast-info {
+    background: hsl(200, 80%, 50%);
+}
+
+.toast-success {
+    background: hsl(120, 60%, 50%);
+}
+
+.toast-error {
+    background: var(--destructive);
+}
+
+.toast-achievement {
+    background: var(--gradient-cheese);
+    color: var(--primary-foreground);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes bounce-cheese {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .game-title {
+        font-size: 2.5rem;
+    }
+    
+    .game-subtitle {
+        font-size: 1rem;
+    }
+    
+    .button-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .ui-stats {
+        flex-wrap: wrap;
+    }
+    
+    #gameCanvas {
+        max-height: 60vh;
+    }
+    
+    .achievements-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .save-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .save-actions {
+        margin-left: 0;
+    }
+    
+    .overlay-content {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+    
+    .cheese-decoration {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+    
+    .toast-container {
+        top: 0.5rem;
+        right: 0.5rem;
+        left: 0.5rem;
+    }
+    
+    .toast {
+        width: 100%;
+    }
+    
+    .story-content h2 {
+        font-size: 2rem;
+    }
+    
+    .story-text {
+        padding: 1.5rem;
+    }
+    
+    .dialogue-page-container {
+        padding: 0.5rem;
+    }
+    
+    .mouse-character {
+        width: 8rem;
+        height: 8rem;
+    }
+    
+    .dialogue-box {
+        padding: 1rem;
+    }
+    
+    .dialogue-text-container {
+        min-height: 4rem;
+        padding: 0.75rem;
+    }
+    
+    .register-card, .login-card {
+        max-width: 24rem;
+        margin: 1rem;
+    }
+    
+    .button-row {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+}
+
+/* Team Pages Styles */
+
+/* Team Overview Page */
+.team-overview {
+    max-width: 48rem;
+    width: 100%;
+    text-align: center;
+}
+
+.team-overview h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.team-intro {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: var(--muted-foreground);
+    margin-bottom: 3rem;
+    max-width: 40rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.team-members-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.team-members-simple {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 40rem;
+    margin: 0 auto 3rem;
+}
+
+.team-member-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-soft);
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.team-member-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-book);
+    border-color: var(--primary);
+}
+
+.member-avatar {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 4rem;
+    height: 4rem;
+    margin: 0 auto 1rem;
+    background: var(--gradient-cheese);
+    border-radius: 50%;
+}
+
+.member-name {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.member-role {
+    font-size: 1rem;
+    color: var(--foreground);
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+}
+
+.member-preview {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    line-height: 1.6;
+}
+
+.member-avatar-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-soft);
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    text-align: left;
+}
+
+.member-avatar-card .member-large-avatar {
+    font-size: 3rem;
+    width: 4rem;
+    height: 4rem;
+    background: var(--gradient-cheese);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 2px solid var(--border);
+}
+
+.member-avatar-card .member-info {
+    flex: 1;
+}
+
+.member-avatar-card .member-name {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 0.25rem;
+}
+
+.member-avatar-card .member-role {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    margin: 0;
+}
+
+
+.team-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    padding: 2rem;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+}
+
+.team-link {
+    margin: 1rem 0;
+    text-align: center;
+}
+
+/* Individual Team Member Pages */
+.team-member-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.member-hero {
+    padding: 3rem 1rem;
+    text-align: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.member-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(1px);
+}
+
+.member-hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 32rem;
+    margin: 0 auto;
+}
+
+.member-large-avatar {
+    font-size: 6rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 8rem;
+    height: 8rem;
+    margin: 0 auto 1rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    backdrop-filter: blur(10px);
+    border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.member-hero-name {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.member-hero-role {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+
+.member-quote {
+    font-size: 1.125rem;
+    font-style: italic;
+    opacity: 0.8;
+    padding: 1rem;
+    border-left: 4px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    backdrop-filter: blur(5px);
+}
+
+.member-content {
+    flex: 1;
+    padding: 2rem 1rem;
+    max-width: 48rem;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.member-section {
+    margin-bottom: 2rem;
+    background: var(--card);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border);
+}
+
+.member-section h3 {
+    font-size: 1.5rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+    font-weight: bold;
+}
+
+.member-section p {
+    line-height: 1.8;
+    color: var(--foreground);
+    font-size: 1rem;
+}
+
+.skills-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.skill-tag {
+    background: var(--gradient-button);
+    color: var(--primary-foreground);
+    padding: 0.5rem 1rem;
+    border-radius: calc(var(--radius) - 2px);
+    font-size: 0.875rem;
+    font-weight: 500;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.skill-tag:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-glow);
+}
+
+.achievements-list {
+    list-style: none;
+    padding: 0;
+}
+
+.achievements-list li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    padding-left: 2rem;
+    color: var(--foreground);
+}
+
+.achievements-list li:last-child {
+    border-bottom: none;
+}
+
+.achievements-list li::before {
+    content: '✨';
+    position: absolute;
+    left: 0;
+    top: 0.75rem;
+    font-size: 1rem;
+}
+
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: var(--muted);
+    border-radius: calc(var(--radius) - 2px);
+}
+
+.contact-label {
+    font-weight: 500;
+    color: var(--muted-foreground);
+    min-width: 4rem;
+}
+
+.contact-value {
+    color: var(--foreground);
+    flex: 1;
+}
+
+.contact-link {
+    color: var(--primary);
+    text-decoration: none;
+    flex: 1;
+    transition: color 0.3s ease;
+}
+
+.contact-link:hover {
+    color: var(--primary-glow);
+    text-decoration: underline;
+}
+
+.member-nav {
+    padding: 1.5rem;
+    background: var(--card);
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Responsive Design for Team Pages */
+@media (max-width: 768px) {
+    .team-overview h2 {
+        font-size: 2rem;
+    }
+    
+    .team-members-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .team-members-simple {
+        max-width: 100%;
+        padding: 0 1rem;
+    }
+    
+    .member-avatar-card {
+        padding: 1rem;
+        gap: 1rem;
+    }
+    
+    .member-avatar-card .member-large-avatar {
+        width: 3rem;
+        height: 3rem;
+        font-size: 2rem;
+    }
+    
+    
+    .team-stats {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .member-hero {
+        padding: 2rem 1rem;
+    }
+    
+    .member-large-avatar {
+        font-size: 4rem;
+        width: 6rem;
+        height: 6rem;
+    }
+    
+    .member-hero-name {
+        font-size: 2rem;
+    }
+    
+    .member-hero-role {
+        font-size: 1rem;
+    }
+    
+    .member-quote {
+        font-size: 1rem;
+    }
+    
+    .member-content {
+        padding: 1rem;
+    }
+    
+    .member-section {
+        padding: 1rem;
+    }
+    
+    .contact-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .member-nav {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .member-nav .game-button {
+        width: 100%;
+    }
+}

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小鼠奇遇记 - Bookworm Cheese Quest</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="assets/favicon.ico">
+</head>
+<body>
+    <div id="app">
+        <!-- Home Page -->
+        <div id="homePage" class="page active">
+            <div class="home-container">
+                <div class="background-overlay"></div>
+                <div class="home-content">
+                    <h1 class="game-title">小鼠奇遇记</h1>
+                    <p class="game-subtitle">在书本的世界中开始你的冒险旅程</p>
+                    
+                    <div class="menu-buttons">
+                        <button class="game-button primary large" onclick="showPage('registerPage')">
+                            开始冒险
+                        </button>
+                        <div class="button-row">
+                            <button class="game-button secondary" onclick="showPage('loginPage')">
+                                继续游戏
+                            </button>
+                            <button class="game-button secondary" onclick="showPage('savesPage')">
+                                读取存档
+                            </button>
+                        </div>
+                        <button class="game-button outline" onclick="showPage('achievementsPage')">
+                            成就系统
+                        </button>
+                        <button class="game-button secondary" onclick="showPage('teamPage')">
+                            👥 关于我们
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Floating cheese decorations -->
+                <div class="cheese-decoration bottom-left"></div>
+                <div class="cheese-decoration top-right"></div>
+            </div>
+        </div>
+
+        <!-- Register Page -->
+        <div id="registerPage" class="page">
+            <div class="page-container">
+                <div class="card register-card">
+                    <h2>欢迎来到小鼠世界</h2>
+                    <p>请创建你的玩家档案开始冒险</p>
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label for="newUsername">玩家名称</label>
+                            <input type="text" id="newUsername" placeholder="输入你的名字" required minlength="2" maxlength="20">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">邮箱 (可选)</label>
+                            <input type="email" id="email" placeholder="your@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="difficulty">难度选择</label>
+                            <select id="difficulty" class="form-select">
+                                <option value="easy">简单 - 适合新手</option>
+                                <option value="normal" selected>普通 - 标准体验</option>
+                                <option value="hard">困难 - 挑战极限</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="game-button primary large">
+                            创建角色
+                        </button>
+                    </form>
+                    <div class="login-link">
+                        <p>已有账号？ <a href="#" onclick="showPage('loginPage')">点击登录</a></p>
+                    </div>
+                    <button class="game-button outline" onclick="showPage('homePage')">
+                        返回主页
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Page -->
+        <div id="loginPage" class="page">
+            <div class="page-container">
+                <div class="card login-card">
+                    <h2>欢迎回来</h2>
+                    <p>请输入你的玩家名称继续冒险</p>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="username">玩家名称</label>
+                            <input type="text" id="username" placeholder="输入你的名字" required>
+                        </div>
+                        <button type="submit" class="game-button primary large">
+                            继续冒险
+                        </button>
+                    </form>
+                    <div class="register-link">
+                        <p>新玩家？ <a href="#" onclick="showPage('registerPage')">点击注册</a></p>
+                    </div>
+                    <div class="team-link">
+                        <button class="game-button secondary" onclick="showPage('teamPage')">
+                            👥 关于我们
+                        </button>
+                    </div>
+                    <button class="game-button outline" onclick="showPage('homePage')">
+                        返回主页
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Story Page -->
+        <div id="storyPage" class="page">
+            <div class="page-container">
+                <div class="story-content">
+                    <h2>欢迎来到小鼠世界</h2>
+                    <div class="story-text">
+                        <p>在一个充满魔法的图书馆里，住着一只聪明的小老鼠。这只小老鼠热爱阅读，但更热爱美味的奶酪...</p>
+                        <p>今天，一个神秘的声音召唤着小老鼠开始一场奇妙的冒险。这场冒险将带领它穿越书本的世界，收集魔法奶酪，解锁隐藏的秘密。</p>
+                        <p class="story-highlight">你准备好开始这场冒险了吗？</p>
+                    </div>
+                    <div class="story-buttons">
+                        <button class="game-button primary large" onclick="startStoryDialogue()">
+                            📖 聆听故事
+                        </button>
+                        <button class="game-button secondary" onclick="window.gameApp?.startGame()">
+                            🎮 直接开始游戏
+                        </button>
+                        <button class="game-button outline" onclick="showPage('homePage')">
+                            🏠 返回主页
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Page -->
+        <div id="gamePage" class="page">
+            <div class="game-container">
+                <!-- Game UI -->
+                <div class="game-ui">
+                    <div class="ui-stats">
+                        <div class="stat-card">
+                            <div class="stat-label">分数</div>
+                            <div class="stat-value" id="scoreDisplay">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">时间</div>
+                            <div class="stat-value cheese-color" id="timeDisplay">2:00</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">奶酪</div>
+                            <div class="stat-value cheese-color" id="cheeseDisplay">0/5</div>
+                        </div>
+                    </div>
+
+                    <div class="ui-controls">
+                        <button class="game-button secondary" id="pauseBtn" onclick="togglePause()">
+                            暂停
+                        </button>
+                        <button class="game-button outline" onclick="showPage('storyPage')">
+                            退出游戏
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Game Canvas -->
+                <div class="canvas-container">
+                    <canvas id="gameCanvas" width="1200" height="800"></canvas>
+                </div>
+
+                <!-- Game Controls Info -->
+                <div class="controls-info">
+                    <p>使用 A/D 或 ←/→ 移动，空格键跳跃，ESC 暂停游戏</p>
+                </div>
+            </div>
+
+            <!-- Pause Overlay -->
+            <div id="pauseOverlay" class="game-overlay hidden">
+                <div class="overlay-content">
+                    <h2>游戏暂停</h2>
+                    <div class="overlay-buttons">
+                        <button class="game-button primary large" onclick="togglePause()">
+                            继续游戏
+                        </button>
+                        <button class="game-button secondary" onclick="restartGame()">
+                            重新开始
+                        </button>
+                        <button class="game-button outline" onclick="showPage('storyPage')">
+                            返回故事
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completion Overlay -->
+            <div id="completionOverlay" class="game-overlay hidden">
+                <div class="overlay-content">
+                    <h2 class="completion-title">关卡完成！</h2>
+                    <p>你收集了所有的奶酪！</p>
+                    <div class="final-score">
+                        <p>最终分数: <span id="finalScore">0</span></p>
+                    </div>
+                    <div class="overlay-buttons">
+                        <button class="game-button primary large" onclick="restartGame()">
+                            再次挑战
+                        </button>
+                        <button class="game-button secondary" onclick="showPage('achievementsPage')">
+                            查看成就
+                        </button>
+                        <button class="game-button outline" onclick="showPage('storyPage')">
+                            返回故事
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Achievements Page -->
+        <div id="achievementsPage" class="page">
+            <div class="page-container">
+                <h2>成就系统</h2>
+                <div class="achievements-grid" id="achievementsGrid">
+                    <!-- Achievements will be populated by JavaScript -->
+                </div>
+                <button class="game-button outline" onclick="showPage('homePage')">
+                    返回主页
+                </button>
+            </div>
+        </div>
+
+        <!-- Saves Page -->
+        <div id="savesPage" class="page">
+            <div class="page-container">
+                <h2>存档管理</h2>
+                <div class="saves-container" id="savesContainer">
+                    <!-- Saves will be populated by JavaScript -->
+                </div>
+                <button class="game-button outline" onclick="showPage('homePage')">
+                    返回主页
+                </button>
+            </div>
+        </div>
+
+        <!-- Dialogue Page -->
+        <div id="dialoguePage" class="page">
+            <div class="dialogue-page-container">
+                <!-- Character Display -->
+                <div class="character-display">
+                    <div class="character-container">
+                        <div class="mouse-character"></div>
+                    </div>
+                </div>
+
+                <!-- Dialogue Box -->
+                <div class="dialogue-box-container">
+                    <div class="dialogue-box">
+                        <div class="speaker" id="dialogueSpeaker">小老鼠</div>
+                        <div class="dialogue-text-container">
+                            <div class="dialogue-text" id="dialogueText">
+                                哇！这里有这么多美味的奶酪，我要把它们都收集起来！
+                            </div>
+                            <div class="typing-indicator" id="typingIndicator">|</div>
+                        </div>
+                        
+                        <!-- Continue/Options Area -->
+                        <div class="dialogue-controls" id="dialogueControls">
+                            <div class="dialogue-options hidden" id="dialogueOptions">
+                                <!-- Options will be populated by JavaScript -->
+                            </div>
+                            
+                            <div class="dialogue-continue" id="dialogueContinue">
+                                <div class="continue-hint">点击继续</div>
+                                <button class="game-button primary" onclick="continueDialogue()">
+                                    继续
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Skip Button -->
+                    <div class="dialogue-skip">
+                        <button class="game-button outline" onclick="skipDialogue()">
+                            跳过对话
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Overview Page -->
+        <div id="teamPage" class="page">
+            <div class="page-container">
+                <div class="team-overview">
+                    <h2>关于我们</h2>
+                    <p class="team-intro">
+                        我们是一支充满激情的小团队
+                    </p>
+                    
+                    <div class="team-members-simple">
+                        <div class="member-avatar-card" title="张小明 - 项目经理 & 前端开发">
+                            <div class="member-large-avatar">👨‍💼</div>
+                            <div class="member-info">
+                                <h3 class="member-name">张小明</h3>
+                                <p class="member-role">项目经理 & 前端开发</p>
+                            </div>
+                        </div>
+                        
+                        <div class="member-avatar-card" title="李小红 - 游戏设计师 & UI/UX设计">
+                            <div class="member-large-avatar">👩‍🎨</div>
+                            <div class="member-info">
+                                <h3 class="member-name">李小红</h3>
+                                <p class="member-role">游戏设计师 & UI/UX设计</p>
+                            </div>
+                        </div>
+                        
+                        <div class="member-avatar-card" title="王小强 - 后端开发 & 系统架构">
+                            <div class="member-large-avatar">👨‍💻</div>
+                            <div class="member-info">
+                                <h3 class="member-name">王小强</h3>
+                                <p class="member-role">后端开发 & 系统架构</p>
+                            </div>
+                        </div>
+                        
+                        <div class="member-avatar-card" title="赵小美 - 测试工程师 & 质量保证">
+                            <div class="member-large-avatar">👩‍🔬</div>
+                            <div class="member-info">
+                                <h3 class="member-name">赵小美</h3>
+                                <p class="member-role">测试工程师 & 质量保证</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="game-button outline" onclick="showPage('loginPage')">
+                        返回登录
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Toast notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="utils/constants.js"></script>
+    <script src="utils/helpers.js"></script>
+    <script src="utils/storage.js"></script>
+    <script src="utils/dialogue-data.js"></script>
+    <script src="src/game-state.js"></script>
+    <script src="src/page-manager.js"></script>
+    <script src="src/dialogue-system.js"></script>
+    <script src="src/form-handlers.js"></script>
+    <script src="src/app.js"></script>
+</body>
+</html>
