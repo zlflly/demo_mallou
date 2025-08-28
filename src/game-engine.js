@@ -1,19 +1,17 @@
 // 游戏引擎模块
-import { GAME_CONSTANTS, INITIAL_GAME_OBJECTS } from '../utils/constants.js';
-import { checkCollision, formatTime, showToast } from '../utils/helpers.js';
 
 /**
  * 游戏引擎类
  */
-export class GameEngine {
+window.GameEngine = class GameEngine {
     constructor(gameState, pageManager) {
         this.gameState = gameState;
         this.pageManager = pageManager;
         
         // 游戏状态
-        this.currentGameState = GAME_CONSTANTS.GAME_STATES.PLAYING;
+        this.currentGameState = window.GAME_CONSTANTS.GAME_STATES.PLAYING;
         this.score = 0;
-        this.timeLeft = GAME_CONSTANTS.TIMER_DURATION;
+        this.timeLeft = window.GAME_CONSTANTS.TIMER_DURATION;
         this.keys = new Set();
         
         // 游戏循环相关
@@ -34,9 +32,9 @@ export class GameEngine {
      */
     resetGameObjects() {
         return {
-            player: { ...INITIAL_GAME_OBJECTS.player },
-            platforms: [...INITIAL_GAME_OBJECTS.platforms],
-            cheeses: INITIAL_GAME_OBJECTS.cheeses.map(cheese => ({ ...cheese, collected: false }))
+            player: { ...window.INITIAL_GAME_OBJECTS.player },
+            platforms: [...window.INITIAL_GAME_OBJECTS.platforms],
+            cheeses: window.INITIAL_GAME_OBJECTS.cheeses.map(cheese => ({ ...cheese, collected: false }))
         };
     }
 
@@ -135,8 +133,8 @@ export class GameEngine {
     reset() {
         this.gameObjects = this.resetGameObjects();
         this.score = 0;
-        this.timeLeft = GAME_CONSTANTS.TIMER_DURATION;
-        this.currentGameState = GAME_CONSTANTS.GAME_STATES.PLAYING;
+        this.timeLeft = window.GAME_CONSTANTS.TIMER_DURATION;
+        this.currentGameState = window.GAME_CONSTANTS.GAME_STATES.PLAYING;
         this.updateUI();
         
         // 隐藏覆盖层
@@ -156,12 +154,12 @@ export class GameEngine {
      * 暂停/继续游戏
      */
     togglePause() {
-        if (this.currentGameState === GAME_CONSTANTS.GAME_STATES.PLAYING) {
-            this.currentGameState = GAME_CONSTANTS.GAME_STATES.PAUSED;
+        if (this.currentGameState === window.GAME_CONSTANTS.GAME_STATES.PLAYING) {
+            this.currentGameState = window.GAME_CONSTANTS.GAME_STATES.PAUSED;
             document.getElementById('pauseOverlay')?.classList.remove('hidden');
             document.getElementById('pauseBtn').textContent = '继续';
-        } else if (this.currentGameState === GAME_CONSTANTS.GAME_STATES.PAUSED) {
-            this.currentGameState = GAME_CONSTANTS.GAME_STATES.PLAYING;
+        } else if (this.currentGameState === window.GAME_CONSTANTS.GAME_STATES.PAUSED) {
+            this.currentGameState = window.GAME_CONSTANTS.GAME_STATES.PLAYING;
             document.getElementById('pauseOverlay')?.classList.add('hidden');
             document.getElementById('pauseBtn').textContent = '暂停';
         }
@@ -172,7 +170,7 @@ export class GameEngine {
      */
     startGameLoop() {
         const loop = () => {
-            if (this.currentGameState === GAME_CONSTANTS.GAME_STATES.PLAYING) {
+            if (this.currentGameState === window.GAME_CONSTANTS.GAME_STATES.PLAYING) {
                 this.update();
             }
             this.render();
@@ -191,7 +189,7 @@ export class GameEngine {
         }
 
         this.timer = setInterval(() => {
-            if (this.currentGameState === GAME_CONSTANTS.GAME_STATES.PLAYING) {
+            if (this.currentGameState === window.GAME_CONSTANTS.GAME_STATES.PLAYING) {
                 this.timeLeft--;
                 if (this.timeLeft <= 0) {
                     this.timeLeft = 0;
@@ -207,7 +205,7 @@ export class GameEngine {
     update() {
         this.updatePlayer();
         this.updateCheeses();
-        this.checkCollisions();
+        this.window.checkCollisions();
         this.checkGameCompletion();
         this.updateUI();
     }
@@ -220,22 +218,22 @@ export class GameEngine {
 
         // 处理输入
         if (this.keys.has('KeyA') || this.keys.has('ArrowLeft')) {
-            player.velocityX = -GAME_CONSTANTS.MOVE_SPEED;
+            player.velocityX = -window.GAME_CONSTANTS.MOVE_SPEED;
             player.facing = 'left';
         } else if (this.keys.has('KeyD') || this.keys.has('ArrowRight')) {
-            player.velocityX = GAME_CONSTANTS.MOVE_SPEED;
+            player.velocityX = window.GAME_CONSTANTS.MOVE_SPEED;
             player.facing = 'right';
         } else {
             player.velocityX *= 0.8; // 摩擦力
         }
 
         if ((this.keys.has('Space') || this.keys.has('KeyW') || this.keys.has('ArrowUp')) && player.onGround) {
-            player.velocityY = GAME_CONSTANTS.JUMP_FORCE;
+            player.velocityY = window.GAME_CONSTANTS.JUMP_FORCE;
             player.onGround = false;
         }
 
         // 应用重力
-        player.velocityY += GAME_CONSTANTS.GRAVITY;
+        player.velocityY += window.GAME_CONSTANTS.GRAVITY;
 
         // 应用速度
         player.x += player.velocityX;
@@ -246,12 +244,12 @@ export class GameEngine {
 
         // 边界检测
         if (player.x < 0) player.x = 0;
-        if (player.x + player.width > GAME_CONSTANTS.CANVAS_WIDTH) {
-            player.x = GAME_CONSTANTS.CANVAS_WIDTH - player.width;
+        if (player.x + player.width > window.GAME_CONSTANTS.CANVAS_WIDTH) {
+            player.x = window.GAME_CONSTANTS.CANVAS_WIDTH - player.width;
         }
 
         // 掉落检测
-        if (player.y > GAME_CONSTANTS.CANVAS_HEIGHT) {
+        if (player.y > window.GAME_CONSTANTS.CANVAS_HEIGHT) {
             this.resetPlayerPosition();
         }
     }
@@ -273,7 +271,7 @@ export class GameEngine {
                 currentPlatform.x = platform.startX + Math.sin(Date.now() * 0.001 * speed) * range;
             }
 
-            if (checkCollision(player, currentPlatform)) {
+            if (window.checkCollision(player, currentPlatform)) {
                 // 从上方落下
                 if (player.velocityY > 0 && player.y < currentPlatform.y) {
                     player.y = currentPlatform.y - player.height;
@@ -307,7 +305,7 @@ export class GameEngine {
         player.y = 600;
         player.velocityX = 0;
         player.velocityY = 0;
-        showToast('小心！小老鼠掉下去了，重新开始吧！', 'error');
+        window.showToast('小心！小老鼠掉下去了，重新开始吧！', 'error');
     }
 
     /**
@@ -322,22 +320,22 @@ export class GameEngine {
     /**
      * 检查碰撞
      */
-    checkCollisions() {
+    window.checkCollisions() {
         const player = this.gameObjects.player;
 
         this.gameObjects.cheeses.forEach(cheese => {
-            if (!cheese.collected && checkCollision(player, cheese)) {
+            if (!cheese.collected && window.checkCollision(player, cheese)) {
                 cheese.collected = true;
                 this.score += 100;
                 
                 const result = this.gameState.collectCheese(1);
                 const achievements = this.gameState.checkAchievements();
                 
-                showToast('奶酪！+100 分！', 'success');
+                window.showToast('奶酪！+100 分！', 'success');
                 
                 // 显示成就解锁
                 achievements.forEach(achievement => {
-                    showToast(`🏆 成就解锁：${achievement.title}`, 'achievement');
+                    window.showToast(`🏆 成就解锁：${achievement.title}`, 'achievement');
                 });
             }
         });
@@ -348,7 +346,7 @@ export class GameEngine {
      */
     checkGameCompletion() {
         const allCheeseCollected = this.gameObjects.cheeses.every(c => c.collected);
-        if (allCheeseCollected && this.currentGameState === GAME_CONSTANTS.GAME_STATES.PLAYING) {
+        if (allCheeseCollected && this.currentGameState === window.GAME_CONSTANTS.GAME_STATES.PLAYING) {
             this.completeGame(true);
         }
     }
@@ -358,13 +356,13 @@ export class GameEngine {
      * @param {boolean} success - 是否成功完成
      */
     completeGame(success) {
-        this.currentGameState = GAME_CONSTANTS.GAME_STATES.COMPLETED;
+        this.currentGameState = window.GAME_CONSTANTS.GAME_STATES.COMPLETED;
         
         if (success) {
             this.gameState.completeLevel(this.gameState.gameProgress.currentLevel);
-            showToast('关卡完成！所有奶酪都收集完了！', 'success');
+            window.showToast('关卡完成！所有奶酪都收集完了！', 'success');
         } else {
-            showToast('时间到！虽然时间用完了，但你可以继续游戏！', 'info');
+            window.showToast('时间到！虽然时间用完了，但你可以继续游戏！', 'info');
         }
         
         document.getElementById('finalScore').textContent = this.score;
@@ -379,7 +377,7 @@ export class GameEngine {
 
         // 清空画布
         this.ctx.fillStyle = '#f5f5dc';
-        this.ctx.fillRect(0, 0, GAME_CONSTANTS.CANVAS_WIDTH, GAME_CONSTANTS.CANVAS_HEIGHT);
+        this.ctx.fillRect(0, 0, window.GAME_CONSTANTS.CANVAS_WIDTH, window.GAME_CONSTANTS.CANVAS_HEIGHT);
 
         this.renderPlatforms();
         this.renderCheeses();
@@ -492,7 +490,7 @@ export class GameEngine {
         const cheeseDisplay = document.getElementById('cheeseDisplay');
 
         if (scoreDisplay) scoreDisplay.textContent = this.score;
-        if (timeDisplay) timeDisplay.textContent = formatTime(this.timeLeft);
+        if (timeDisplay) timeDisplay.textContent = window.formatTime(this.timeLeft);
 
         if (cheeseDisplay) {
             const collected = this.gameObjects.cheeses.filter(c => c.collected).length;

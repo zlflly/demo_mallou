@@ -53,15 +53,15 @@ window.FormHandlers = class FormHandlers {
         const difficulty = document.getElementById('difficulty')?.value;
 
         // 验证用户名
-        const usernameValidation = validateUsername(username);
+        const usernameValidation = window.validateUsername(username);
         if (!usernameValidation.valid) {
-            showToast(usernameValidation.message, 'error');
+            window.showToast(usernameValidation.message, 'error');
             return;
         }
 
         // 验证邮箱（可选）
-        if (email && !validateEmail(email)) {
-            showToast('邮箱格式不正确', 'error');
+        if (email && !window.validateEmail(email)) {
+            window.showToast('邮箱格式不正确', 'error');
             return;
         }
 
@@ -73,7 +73,7 @@ window.FormHandlers = class FormHandlers {
                 isNewPlayer: true
             });
 
-            showToast(`欢迎加入小鼠世界，${username}！`, 'success');
+            window.showToast(`欢迎加入小鼠世界，${username}！`, 'success');
 
             // 开始故事对话
             setTimeout(() => {
@@ -82,7 +82,7 @@ window.FormHandlers = class FormHandlers {
 
         } catch (error) {
             console.error('注册失败:', error);
-            showToast('注册失败，请稍后重试', 'error');
+            window.showToast('注册失败，请稍后重试', 'error');
         }
     }
 
@@ -93,9 +93,9 @@ window.FormHandlers = class FormHandlers {
         const username = document.getElementById('username')?.value.trim();
 
         // 验证用户名
-        const usernameValidation = validateUsername(username);
+        const usernameValidation = window.validateUsername(username);
         if (!usernameValidation.valid) {
-            showToast(usernameValidation.message, 'error');
+            window.showToast(usernameValidation.message, 'error');
             return;
         }
 
@@ -106,19 +106,19 @@ window.FormHandlers = class FormHandlers {
             this.gameState.loginPlayer(username, { isNewPlayer: false });
 
             if (existingPlayer) {
-                showToast(`欢迎回来，${username}！`, 'success');
+                window.showToast(`欢迎回来，${username}！`, 'success');
             } else {
-                showToast(`欢迎，${username}！`, 'success');
+                window.showToast(`欢迎，${username}！`, 'success');
             }
 
             // 跳转到故事页面
             setTimeout(() => {
-                this.pageManager.showPage(GAME_CONSTANTS.PAGES.STORY);
+                this.pageManager.showPage(window.GAME_CONSTANTS.PAGES.STORY);
             }, 500);
 
         } catch (error) {
             console.error('登录失败:', error);
-            showToast('登录失败，请稍后重试', 'error');
+            window.showToast('登录失败，请稍后重试', 'error');
         }
     }
 
@@ -128,18 +128,18 @@ window.FormHandlers = class FormHandlers {
     handleCreateSave() {
         const saveName = prompt('请输入存档名称:');
         if (!saveName || saveName.trim() === '') {
-            showToast('存档名称不能为空', 'error');
+            window.showToast('存档名称不能为空', 'error');
             return;
         }
 
         const result = this.gameState.createSave(saveName.trim());
         if (result.success) {
-            showToast('存档创建成功！', 'success');
-            if (this.pageManager.isCurrentPage(GAME_CONSTANTS.PAGES.SAVES)) {
+            window.showToast('存档创建成功！', 'success');
+            if (this.pageManager.isCurrentPage(window.GAME_CONSTANTS.PAGES.SAVES)) {
                 this.pageManager.renderSaves();
             }
         } else {
-            showToast(`存档创建失败: ${result.error}`, 'error');
+            window.showToast(`存档创建失败: ${result.error}`, 'error');
         }
     }
 
@@ -149,19 +149,19 @@ window.FormHandlers = class FormHandlers {
      */
     handleLoadSave(saveId) {
         if (!saveId) {
-            showToast('无效的存档ID', 'error');
+            window.showToast('无效的存档ID', 'error');
             return;
         }
 
         const success = this.gameState.loadSave(saveId);
         if (success) {
-            showToast('存档加载成功！', 'success');
+            window.showToast('存档加载成功！', 'success');
             // 跳转到游戏页面
             setTimeout(() => {
-                this.pageManager.showPage(GAME_CONSTANTS.PAGES.GAME);
+                this.pageManager.showPage(window.GAME_CONSTANTS.PAGES.GAME);
             }, 500);
         } else {
-            showToast('存档加载失败', 'error');
+            window.showToast('存档加载失败', 'error');
         }
     }
 
@@ -171,7 +171,7 @@ window.FormHandlers = class FormHandlers {
      */
     handleDeleteSave(saveId) {
         if (!saveId) {
-            showToast('无效的存档ID', 'error');
+            window.showToast('无效的存档ID', 'error');
             return;
         }
 
@@ -180,13 +180,13 @@ window.FormHandlers = class FormHandlers {
 
         const result = this.gameState.deleteSave(saveId);
         if (result.success) {
-            showToast('存档删除成功', 'success');
+            window.showToast('存档删除成功', 'success');
             // 重新渲染存档列表
-            if (this.pageManager.isCurrentPage(GAME_CONSTANTS.PAGES.SAVES)) {
+            if (this.pageManager.isCurrentPage(window.GAME_CONSTANTS.PAGES.SAVES)) {
                 this.pageManager.renderSaves();
             }
         } else {
-            showToast(`存档删除失败: ${result.error}`, 'error');
+            window.showToast(`存档删除失败: ${result.error}`, 'error');
         }
     }
 

@@ -1,20 +1,14 @@
 // 主应用程序
-import { GameState } from './game-state.js';
-import { PageManager } from './page-manager.js';
-import { DialogueSystem } from './dialogue-system.js';
-import { FormHandlers } from './form-handlers.js';
-import { GAME_CONSTANTS } from '../utils/constants.js';
-import { showToast } from '../utils/helpers.js';
 
 /**
  * 主应用程序类
  */
 class GameApplication {
     constructor() {
-        this.gameState = new GameState();
-        this.pageManager = new PageManager(this.gameState);
-        this.dialogueSystem = new DialogueSystem(this.gameState, this.pageManager);
-        this.formHandlers = new FormHandlers(this.gameState, this.pageManager, this.dialogueSystem);
+        this.gameState = new window.GameState();
+        this.pageManager = new window.PageManager(this.gameState);
+        this.dialogueSystem = new window.DialogueSystem(this.gameState, this.pageManager);
+        this.formHandlers = new window.FormHandlers(this.gameState, this.pageManager, this.dialogueSystem);
         
         // 游戏引擎将在需要时初始化
         this.gameEngine = null;
@@ -47,7 +41,7 @@ class GameApplication {
         this.setupGlobalFunctions();
         
         // 显示主页
-        this.pageManager.showPage(GAME_CONSTANTS.PAGES.HOME);
+        this.pageManager.showPage(window.GAME_CONSTANTS.PAGES.HOME);
         
         // 设置全局错误处理
         this.setupErrorHandling();
@@ -101,31 +95,30 @@ class GameApplication {
     setupErrorHandling() {
         window.addEventListener('error', (event) => {
             console.error('应用错误:', event.error);
-            showToast('发生了一个错误，请刷新页面重试', 'error');
+            window.showToast('发生了一个错误，请刷新页面重试', 'error');
         });
 
         window.addEventListener('unhandledrejection', (event) => {
             console.error('未处理的Promise拒绝:', event.reason);
-            showToast('发生了一个错误，请稍后重试', 'error');
+            window.showToast('发生了一个错误，请稍后重试', 'error');
         });
     }
 
     /**
      * 初始化游戏引擎
      */
-    async initializeGameEngine() {
+    initializeGameEngine() {
         if (this.gameEngine) {
             return this.gameEngine;
         }
 
         try {
-            // 动态导入游戏引擎模块
-            const { GameEngine } = await import('./game-engine.js');
-            this.gameEngine = new GameEngine(this.gameState, this.pageManager);
+            // 直接使用全局的GameEngine类
+            this.gameEngine = new window.GameEngine(this.gameState, this.pageManager);
             return this.gameEngine;
         } catch (error) {
             console.error('游戏引擎初始化失败:', error);
-            showToast('游戏初始化失败', 'error');
+            window.showToast('游戏初始化失败', 'error');
             return null;
         }
     }
@@ -133,11 +126,11 @@ class GameApplication {
     /**
      * 开始游戏
      */
-    async startGame() {
-        const engine = await this.initializeGameEngine();
+    startGame() {
+        const engine = this.initializeGameEngine();
         if (engine) {
             engine.initialize();
-            this.pageManager.showPage(GAME_CONSTANTS.PAGES.GAME);
+            this.pageManager.showPage(window.GAME_CONSTANTS.PAGES.GAME);
         }
     }
 
@@ -213,9 +206,9 @@ class GameApplication {
         this.dialogueSystem.endDialogue();
         
         // 返回主页
-        this.pageManager.showPage(GAME_CONSTANTS.PAGES.HOME);
+        this.pageManager.showPage(window.GAME_CONSTANTS.PAGES.HOME);
         
-        showToast('应用已重启', 'info');
+        window.showToast('应用已重启', 'info');
     }
 
     /**
@@ -247,4 +240,3 @@ window.addEventListener('beforeunload', () => {
     app.cleanup();
 });
 
-export default GameApplication;
